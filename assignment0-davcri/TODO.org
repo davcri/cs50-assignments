@@ -1,0 +1,4 @@
+* DONE Implementa semplice AI 
+* TODO Implementa AI con previsione posizione palla
+* TODO Implementa cool bouncing
+* TODO Aggiorna IA per massimizzare la velocità della palla
