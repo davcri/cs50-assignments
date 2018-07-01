@@ -31,7 +31,7 @@ function PlayState:enter(params)
 
     self.powerup = Powerup()
 
-    self.recoverPoints = 5000
+    self.recoverPoints = 2500
 
     -- give ball random starting velocity
     self.balls[1].dx = math.random(-200, 200)
@@ -118,6 +118,9 @@ function PlayState:update(dt)
                     -- multiply recover points by 2
                     self.recoverPoints = math.min(100000, self.recoverPoints * 2)
 
+                    -- grow paddle
+                    self.paddle:grow()
+
                     -- play recover sound effect
                     gSounds['recover']:play()
                 end
@@ -192,6 +195,7 @@ function PlayState:update(dt)
             if #self.balls == 1 then
                 self.health = self.health - 1
                 gSounds['hurt']:play()
+                self.paddle:shrink()
 
                 if self.health == 0 then
                     gStateMachine:change('game-over', {

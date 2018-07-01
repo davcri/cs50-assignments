@@ -72,6 +72,24 @@ end
     that corresponds to the proper skin and size.
 ]]
 function Paddle:render()
-    love.graphics.draw(gTextures['main'], gFrames['paddles'][self.size + 4 * (self.skin - 1)],
+    -- frame used to draw the paddle
+    paddleFrame = gFrames['paddles'][self.size + 4 * (self.skin - 1)]
+    print(self.size)
+
+    love.graphics.draw(gTextures['main'], paddleFrame,
         self.x, self.y)
+end
+
+function Paddle:grow()
+    if self.size < 4 then
+        self.size = self.size + 1
+        self.width = 32*self.size
+    end
+end
+
+function Paddle:shrink()
+    if self.size > 1 then
+        self.size = self.size - 1
+        self.width = 32*self.size
+    end
 end
