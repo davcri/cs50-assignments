@@ -52,6 +52,10 @@ function PlayState:update(dt)
         return
     end
 
+    if #self.balls == 1 then
+        self.powerup:update(dt)
+    end
+
     -- handle powerup collision
     if self.powerup:collides(self.paddle) and #self.balls == 1 then
         local b = Ball(math.random(7))
@@ -59,17 +63,17 @@ function PlayState:update(dt)
         b.y = self.balls[1].y
         b.dx = math.random(-200, 200)
         b.dy = math.random(-50, -60)
-        table.insert(self.balls, b) 
-    end
-
-    if #self.balls == 1 then
-        self.powerup:update(dt)
+        table.insert(self.balls, b)
+        local b2 = Ball(math.random(7))
+        b2.x = self.balls[1].x
+        b2.y = self.balls[1].y
+        b2.dx = math.random(-200, 200)
+        b2.dy = math.random(-50, -60)
+        table.insert(self.balls, b2) 
     end
 
     -- update positions based on velocity
     self.paddle:update(dt)
-
-    
 
     for i, ball in pairs(self.balls) do
         ball:update(dt)

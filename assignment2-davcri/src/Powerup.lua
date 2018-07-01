@@ -22,24 +22,26 @@ function Powerup:collides(target)
         return false
     end 
 
-    self.inPlay = false
-    self.timer = 0
+    self:reset()
+
     return true
 end
 
 function Powerup:reset()
+    self.inPlay = false
+    self.timer = 0
+    self.x = math.random(20, VIRTUAL_WIDTH - 20)
+    self.y = 120 + math.random(-30, 30)
 end
 
 function Powerup:update(dt)
+    -- update timer
     self.timer = self.timer + dt
-
     if self.timer > self.spawnTime then
         self.inPlay = true
     end
-
-    if self.inPlay then
-        self.y = self.y + self.speed*dt
-    end
+    -- update position
+    self.y = self.y + self.speed*dt
 end
 
 function Powerup:render()
