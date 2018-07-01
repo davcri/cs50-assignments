@@ -29,9 +29,6 @@ function PlayState:enter(params)
     self.balls = {params.ball} 
     self.level = params.level
 
-    self.powerupTimer = 0  --counter
-    self.powerupSpawned = false
-
     self.powerup = Powerup()
 
     self.recoverPoints = 5000
@@ -55,12 +52,7 @@ function PlayState:update(dt)
         return
     end
 
-    self.powerupTimer = self.powerupTimer + dt
-
-    if self.powerupTimer > 1 and #self.balls == 1 then
-        self.powerup.inPlay = true
-    end
-
+    -- handle powerup collision
     if self.powerup:collides(self.paddle) and #self.balls == 1 then
         local b = Ball(math.random(7))
         b.x = self.balls[1].x
@@ -70,10 +62,14 @@ function PlayState:update(dt)
         table.insert(self.balls, b) 
     end
 
+    if #self.balls == 1 then
+        self.powerup:update(dt)
+    end
+
     -- update positions based on velocity
     self.paddle:update(dt)
 
-    self.powerup:update(dt)
+    
 
     for i, ball in pairs(self.balls) do
         ball:update(dt)

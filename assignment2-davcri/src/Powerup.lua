@@ -9,9 +9,11 @@ function Powerup:init()
     self.speed = 25
     self.width = 16
     self.height = 16
+    self.timer = 0  --counter
+    self.spawnTime = 1 -- seconds
 end
 
-function Powerup:collides(target)   
+function Powerup:collides(target) 
     if self.x > target.x + target.width or target.x > self.x + self.width then
         return false
     end
@@ -21,6 +23,7 @@ function Powerup:collides(target)
     end 
 
     self.inPlay = false
+    self.timer = 0
     return true
 end
 
@@ -28,6 +31,12 @@ function Powerup:reset()
 end
 
 function Powerup:update(dt)
+    self.timer = self.timer + dt
+
+    if self.timer > self.spawnTime then
+        self.inPlay = true
+    end
+
     if self.inPlay then
         self.y = self.y + self.speed*dt
     end
