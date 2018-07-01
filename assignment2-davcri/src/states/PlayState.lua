@@ -58,7 +58,6 @@ function PlayState:update(dt)
     self.powerupTimer = self.powerupTimer + dt
 
     if self.powerupTimer > 1 and #self.balls == 1 then
-        print("powerup spawned")
         self.powerup.inPlay = true
     end
 
