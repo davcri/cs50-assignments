@@ -57,7 +57,7 @@ function PlayState:update(dt)
     -- handle powerup spawn
     self.powerup.timer = self.powerup.timer + dt
     if not self.powerup.inPlay and self.powerup.timer > self.powerup.spawnTime then
-        if math.random(1, 100) < 5 then
+        if math.random(1, 100) < 50 then
             if not self.keyTaken and self:blockedBrickSpawned() then
                 self.powerup.type = 2  --key
                 self.powerup.inPlay = true
@@ -65,10 +65,9 @@ function PlayState:update(dt)
                 print(#self.balls)  -- more balls
                 self.powerup.type = 1
                 self.powerup.inPlay = true
-            else
-                print("niente")
             end
         end
+        self.powerup.timer = 0
     end
 
     if self.powerup.inPlay then
@@ -263,6 +262,11 @@ function PlayState:update(dt)
 end
 
 function PlayState:render()
+    -- feedback chiave
+    if self.keyTaken then
+        love.graphics.print("Chiave presa", 25, 200)
+    end
+
     -- render bricks
     for k, brick in pairs(self.bricks) do
         brick:render()

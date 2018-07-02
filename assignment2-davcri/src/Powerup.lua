@@ -40,6 +40,10 @@ end
 function Powerup:update(dt)
     -- update position
     self.y = self.y + self.speed*dt
+
+    if self.y > VIRTUAL_HEIGHT then
+        self:reset()
+    end
 end
 
 function Powerup:render()
