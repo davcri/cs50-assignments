@@ -31,6 +31,8 @@ function PlayState:enter(params)
 
     self.powerup = Powerup()
 
+    self.keyTaken = false
+
     self.recoverPoints = 2500
 
     -- give ball random starting velocity
@@ -52,24 +54,48 @@ function PlayState:update(dt)
         return
     end
 
-    if #self.balls == 1 then
+    -- handle powerup spawn
+    self.powerup.timer = self.powerup.timer + dt
+    if not self.powerup.inPlay and self.powerup.timer > self.powerup.spawnTime then
+        if math.random(1, 100) < 5 then
+            if not self.keyTaken and self:blockedBrickSpawned() then
+                self.powerup.type = 2  --key
+                self.powerup.inPlay = true
+            elseif #self.balls == 1 then
+                print(#self.balls)  -- more balls
+                self.powerup.type = 1
+                self.powerup.inPlay = true
+            else
+                print("niente")
+            end
+        end
+    end
+
+    if self.powerup.inPlay then
         self.powerup:update(dt)
     end
 
     -- handle powerup collision
-    if self.powerup:collides(self.paddle) and #self.balls == 1 then
-        local b = Ball(math.random(7))
-        b.x = self.balls[1].x
-        b.y = self.balls[1].y
-        b.dx = math.random(-200, 200)
-        b.dy = math.random(-50, -60)
-        table.insert(self.balls, b)
-        local b2 = Ball(math.random(7))
-        b2.x = self.balls[1].x
-        b2.y = self.balls[1].y
-        b2.dx = math.random(-200, 200)
-        b2.dy = math.random(-50, -60)
-        table.insert(self.balls, b2) 
+    if self.powerup:collides(self.paddle) then
+        print(self.powerup.type)
+        if self.powerup.type == 1 then
+            print("more balls powerup preso (tipo 1)")
+            local b = Ball(math.random(7))
+            b.x = self.balls[1].x
+            b.y = self.balls[1].y
+            b.dx = math.random(-200, 200)
+            b.dy = math.random(-50, -60)
+            table.insert(self.balls, b)
+            local b2 = Ball(math.random(7))
+            b2.x = self.balls[1].x
+            b2.y = self.balls[1].y
+            b2.dx = math.random(-200, 200)
+            b2.dy = math.random(-50, -60)
+            table.insert(self.balls, b2)
+        elseif self.powerup.type == 2 then
+            print("chiave powerup preso (tipo 2)")
+            self.keyTaken = true
+        end
     end
 
     -- update positions based on velocity
@@ -103,6 +129,13 @@ function PlayState:update(dt)
 
             -- only check collision if we're in play
             if brick.inPlay and ball:collides(brick) then
+
+                -- handle locked brick
+                if self.keyTaken and brick.locked then
+                    brick:hit()
+                    brick.locked = false
+                    print("locked brick hit!")
+                end
 
                 -- add to score
                 self.score = self.score + (brick.tier * 200 + brick.color * 25)
@@ -265,4 +298,13 @@ function PlayState:checkVictory()
     end
 
     return true
+end
+
+function PlayState:blockedBrickSpawned()
+    for k, brick in pairs(self.bricks) do
+        if brick.inPlay and brick.locked then
+            return true
+        end
+    end
+    return false
 end

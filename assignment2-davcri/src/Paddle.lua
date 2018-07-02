@@ -74,7 +74,6 @@ end
 function Paddle:render()
     -- frame used to draw the paddle
     paddleFrame = gFrames['paddles'][self.size + 4 * (self.skin - 1)]
-    print(self.size)
 
     love.graphics.draw(gTextures['main'], paddleFrame,
         self.x, self.y)

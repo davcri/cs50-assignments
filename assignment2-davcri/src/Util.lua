@@ -141,3 +141,8 @@ function GenerateQuadsPowerups(atlas)
 
     return quads
 end
+
+function GenerateQuadsLockedBrick(atlas)
+    spritesheet = love.graphics.newQuad(160, 48, 32, 16, atlas:getDimensions())
+    return spritesheet
+end

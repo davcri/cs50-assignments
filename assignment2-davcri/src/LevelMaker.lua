@@ -33,6 +33,9 @@ LevelMaker = Class{}
 function LevelMaker.createMap(level)
     local bricks = {}
 
+    -- variable to keep track of a spawned locked brick
+    local lockedBrick = false
+
     -- randomly choose the number of rows
     local numRows = math.random(1, 5)
 
@@ -94,6 +97,12 @@ function LevelMaker.createMap(level)
                 -- y-coordinate
                 y * 16                  -- just use y * 16, since we need top padding anyway
             )
+
+            -- enable locked brick
+            if not lockedBrick and math.random(1,100) < 15 then
+                b.locked = true
+                lockedBrick = true
+            end
 
             -- if we're alternating, figure out which color/tier we're on
             if alternatePattern and alternateFlag then
