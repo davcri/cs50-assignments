@@ -13,9 +13,10 @@
 
 Board = Class{}
 
-function Board:init(x, y)
+function Board:init(x, y, variety)
     self.x = x
     self.y = y
+    self.variety = variety -- keep track of which kind of tile shape to spawn
     self.matches = {}
 
     self:initializeTiles()
@@ -31,7 +32,7 @@ function Board:initializeTiles()
 
         for tileX = 1, 8 do
             -- create a new tile at X,Y with a random color and variety
-            table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), math.random(6)))
+            table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), self.variety))
         end
     end
 
