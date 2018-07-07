@@ -78,16 +78,16 @@ function Board:calculateMatches()
                         table.insert(match, self.tiles[y][x2])
                     end
 
+                    print("New match!")
                     -- add this match to our total matches table
                     table.insert(matches, match)
                 end
+                matchNum = 1
 
                 -- don't need to check last two if they won't be in a match
                 if x >= 7 then
                     break
                 end
-
-                matchNum = 1
             end
         end
 
