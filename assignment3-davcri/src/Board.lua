@@ -151,6 +151,14 @@ function Board:calculateMatches()
 
     -- store matches for later reference
     self.matches = matches
+    
+    -- debug print to fix bug
+    for i, m in pairs(matches) do
+        print("Match", i, "-------")
+        for i, t in pairs(m) do
+            print("Tile", i, t.x, t.y)
+        end
+    end
 
     -- return matches table if > 0, else just return false
     return #self.matches > 0 and self.matches or false

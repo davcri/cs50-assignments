@@ -23,8 +23,8 @@ function Tile:init(x, y, color, variety)
     self.y = (self.gridY - 1) * 32
 
     -- tile appearance/points
-    self.color = color
-    self.variety = variety
+    self.color = color  -- accepted values: [1, 18]
+    self.variety = variety -- accepted values: [1, 6]
 end
 
 function Tile:render(x, y)
