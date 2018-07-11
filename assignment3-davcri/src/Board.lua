@@ -266,4 +266,18 @@ function Board:render()
             self.tiles[y][x]:render(self.x, self.y)
         end
     end
+    for y = 1, #self.tiles do
+        for x = 1, #self.tiles[1] do
+            self.tiles[y][x]:renderParticles(self.x, self.y)
+        end
+    end
+
+end
+
+function Board:update(dt)
+    for y = 1, #self.tiles do
+        for x = 1, #self.tiles[1] do
+            self.tiles[y][x]:update(dt)
+        end
+    end
 end

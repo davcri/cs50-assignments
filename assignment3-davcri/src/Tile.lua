@@ -25,6 +25,42 @@ function Tile:init(x, y, color, variety)
     -- tile appearance/points
     self.color = color  -- accepted values: [1, 18]
     self.variety = variety -- accepted values: [1, 6]
+    self.shiny = math.random(1,100) < 10  -- 10% chance of spawning shiny
+    if self.shiny then
+        print("Tile.lua: shiny tile spawned")
+    end
+
+    -- init particle system
+    self.psystem = love.graphics.newParticleSystem(gTextures['particle'], 64)
+
+    -- various behavior-determining functions for the particle system
+    -- https://love2d.org/wiki/ParticleSystem
+
+    -- lasts between 0.5-1 seconds seconds
+    self.psystem:setParticleLifetime(1, 0.9)
+
+    -- give it an acceleration of anywhere between X1,Y1 and X2,Y2
+    self.psystem:setLinearAcceleration(0, 0, 0, -1)
+
+    -- spread of particles; normal looks more natural than uniform
+    self.psystem:setAreaSpread('normal', 8, 8)
+end
+
+function Tile:update(dt)
+    if self.shiny then
+        self.psystem:setColors(
+            255,
+            255,
+            200,
+            125,
+            255,
+            255,
+            150,
+            0
+        )
+        self.psystem:emit(1)
+        self.psystem:update(dt)
+    end
 end
 
 function Tile:render(x, y)
@@ -37,4 +73,11 @@ function Tile:render(x, y)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(gTextures['main'], gFrames['tiles'][self.color][self.variety],
         self.x + x, self.y + y)
+end
+
+function Tile:renderParticles(x, y)
+    if self.shiny then
+        print("drawiiiing shiny")
+        love.graphics.draw(self.psystem, x + self.x + 16, y + self.y + 16)
+    end
 end
