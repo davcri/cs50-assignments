@@ -97,6 +97,7 @@ function Board:calculateMatches()
                     table.insert(matches, match)
                 end
                 matchNum = 1
+                shinyFound = false
 
                 -- don't need to check last two if they won't be in a match
                 if x >= 7 then
@@ -108,12 +109,25 @@ function Board:calculateMatches()
         -- account for the last row ending with a match
         if matchNum >= 3 then
             local match = {}
-            
+           
             -- go backwards from end of last row by matchNum
             for x = 8, 8 - matchNum + 1, -1 do
+                if self.tiles[y][x].shiny then
+                    shinyFound = true
+                    break
+                end
                 table.insert(match, self.tiles[y][x])
             end
 
+            table.insert(matches, match)
+        end
+
+        if shinyFound then
+            local match = {}
+            -- add all the tiles in the current row in the match table
+            for x2 = 1, 8, 1 do
+                table.insert(match, self.tiles[y][x2])
+            end
             table.insert(matches, match)
         end
     end
