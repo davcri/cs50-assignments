@@ -26,9 +26,6 @@ function Tile:init(x, y, color, variety)
     self.color = color  -- accepted values: [1, 18]
     self.variety = variety -- accepted values: [1, 6]
     self.shiny = math.random(1,100) < 10  -- 10% chance of spawning shiny
-    if self.shiny then
-        print("Tile.lua: shiny tile spawned")
-    end
 
     -- init particle system
     self.psystem = love.graphics.newParticleSystem(gTextures['particle'], 64)
@@ -43,7 +40,11 @@ function Tile:init(x, y, color, variety)
     self.psystem:setLinearAcceleration(0, 0, 0, -1)
 
     -- spread of particles; normal looks more natural than uniform
-    self.psystem:setAreaSpread('normal', 8, 8)
+    self.psystem:setAreaSpread('normal', 6, 6)
+
+    Timer.every(0.1, function()
+        self.psystem:emit(2)
+    end)
 end
 
 function Tile:update(dt)
@@ -51,14 +52,13 @@ function Tile:update(dt)
         self.psystem:setColors(
             255,
             255,
-            200,
-            125,
+            250,
+            90,
             255,
             255,
-            150,
+            205,
             0
         )
-        self.psystem:emit(1)
         self.psystem:update(dt)
     end
 end
@@ -77,7 +77,6 @@ end
 
 function Tile:renderParticles(x, y)
     if self.shiny then
-        print("drawiiiing shiny")
         love.graphics.draw(self.psystem, x + self.x + 16, y + self.y + 16)
     end
 end

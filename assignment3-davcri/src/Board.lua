@@ -59,9 +59,14 @@ function Board:calculateMatches()
         local colorToMatch = self.tiles[y][1].color
 
         matchNum = 1
-        
+        shinyFound = false
+
         -- every horizontal tile
         for x = 2, 8 do
+            if self.tiles[y][x].shiny then
+                shinyFound = true
+            end
+
             -- if this is the same color as the one we're trying to match...
             if self.tiles[y][x].color == colorToMatch then
                 matchNum = matchNum + 1
@@ -73,13 +78,21 @@ function Board:calculateMatches()
                 if matchNum >= 3 then
                     local match = {}
 
-                    -- go backwards from here by matchNum
-                    for x2 = x - 1, x - matchNum, -1 do
-                        -- add each tile to the match that's in that match
-                        table.insert(match, self.tiles[y][x2])
+                    if shinyFound then
+                        -- add all the tiles in the current row in the match table
+                        for x2 = 1, 8, 1 do
+                            table.insert(match, self.tiles[y][x2])
+                        end
                     end
 
-                    print("New match!")
+                    if not shinyFound then
+                        -- go backwards from here by matchNum
+                        for x2 = x - 1, x - matchNum, -1 do
+                            -- add each tile to the match that's in that match
+                            table.insert(match, self.tiles[y][x2])
+                        end
+                    end
+
                     -- add this match to our total matches table
                     table.insert(matches, match)
                 end

@@ -192,6 +192,9 @@ function PlayState:calculateMatches()
         for k, match in pairs(matches) do
             self.score = self.score + #match * 50
             for i, tile in pairs(match) do
+                if (tile.shiny) then
+                    print("MATCH CON TILE SHINY")
+                end
                 self.timer = self.timer + 1
             end
         end
