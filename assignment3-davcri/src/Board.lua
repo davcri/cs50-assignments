@@ -181,12 +181,12 @@ function Board:calculateMatches()
     self.matches = matches
     
     -- debug print to fix bug
-    for i, m in pairs(matches) do
-        print("Match", i, "-------")
-        for i, t in pairs(m) do
-            print("Tile", i, t.x, t.y)
-        end
-    end
+    -- for i, m in pairs(matches) do
+    --     print("Match", i, "-------")
+    --     for i, t in pairs(m) do
+    --         print("Tile", i, t.x, t.y)
+    --     end
+    -- end
 
     -- return matches table if > 0, else just return false
     return #self.matches > 0 and self.matches or false
@@ -307,4 +307,53 @@ function Board:update(dt)
             self.tiles[y][x]:update(dt)
         end
     end
+end
+
+function Board:matchesAvailable()    
+    print("called")
+    for y = 1, #self.tiles do
+        for x = 1, #self.tiles[1] do
+            -- print(self.tiles[y][x].color)
+
+            -- if we have at least one tile on the left
+            if x > 1 then
+                -- swap tile left
+                local newTile = self.tiles[y][x-1]
+                self.tiles[y][x-1] = self.tiles[y][x]
+                self.tiles[y][x] = newTile
+                -- calculate matches
+                local matches = self:calculateMatches()
+                -- revert tiles to the original position
+                newTile = self.tiles[y][x-1]
+                self.tiles[y][x-1] = self.tiles[y][x]
+                self.tiles[y][x] = newTile
+                -- if there is at least one match
+                if matches ~= false then
+                    print("Match available: LEFT")      
+                    return true
+                end
+            -- if we have at least one tile on the right
+            elseif x < 8 then
+                -- swap tile right
+                local newTile = self.tiles[y][x+1]
+                self.tiles[y][x+1] = self.tiles[y][x]
+                self.tiles[y][x] = newTile
+                -- calculate matches
+                local matches = self:calculateMatches()
+                -- revert tiles to the original position
+                newTile = self.tiles[y][x+1]
+                self.tiles[y][x+1] = self.tiles[y][x]
+                self.tiles[y][x] = newTile
+                -- if there is at least one match
+                if matches ~= false then
+                    print("Match available: RIGHT")
+                    return true
+                end
+            end
+        end
+        -- print("\n")
+    end
+    
+    -- you cannot match with a single move!    
+    return false
 end

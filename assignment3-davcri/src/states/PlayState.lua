@@ -37,6 +37,9 @@ function PlayState:init()
 
     self.score = 0
     self.timer = 60
+    
+    -- used to display a reset message when there is no match on the board 
+    self.printResetMessage = false
 
     -- set our Timer class to turn cursor highlight on and off
     Timer.every(0.5, function()
@@ -219,6 +222,14 @@ function PlayState:calculateMatches()
         end)
     -- if no matches, we can continue playing
     else
+        if not self.board:matchesAvailable() then
+            self.printResetMessage = true
+            Timer.after(2.5, function()
+                self.printResetMessage = false
+            end
+            )
+            self.board:initializeTiles()
+        end
         self.canInput = true
     end
 end
@@ -262,4 +273,11 @@ function PlayState:render()
     love.graphics.printf('Score: ' .. tostring(self.score), 20, 52, 182, 'center')
     love.graphics.printf('Goal : ' .. tostring(self.scoreGoal), 20, 80, 182, 'center')
     love.graphics.printf('Timer: ' .. tostring(self.timer), 20, 108, 182, 'center')
+
+    if self.printResetMessage then
+        love.graphics.setColor(85, 100, 56, 234)
+        love.graphics.rectangle('fill', 16, 150, 185, 80, 4)
+        love.graphics.setColor(200, 155, 255, 255)
+        love.graphics.printf('No horizontal matches available!\nResetting the board', 20, 160, 182, 'center')
+    end
 end
