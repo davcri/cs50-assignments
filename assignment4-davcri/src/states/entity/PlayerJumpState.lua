@@ -25,7 +25,9 @@ end
 
 function PlayerJumpState:update(dt)
     self.player.currentAnimation:update(dt)
+    -- update velocity 
     self.player.dy = self.player.dy + self.gravity
+    -- update position
     self.player.y = self.player.y + (self.player.dy * dt)
 
     -- go into the falling state when y velocity is positive
