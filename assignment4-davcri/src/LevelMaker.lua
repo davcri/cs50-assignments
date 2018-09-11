@@ -22,8 +22,21 @@ function LevelMaker.generate(width, height)
     local tileset = math.random(20)
     local topperset = math.random(20)
 
-    -- box position
-    local boxPosition = math.random(width)
+    -- lockBlock and key
+    lockVariant = math.random(#LOCK_VARIANTS)
+
+    local lockBlockPosition = math.random(width)
+    lockBlockPosition = 5
+
+    local keyPosition = math.random(width)
+    keyPosition = 8
+
+    keyTaken = false
+
+    -- loop until they spawn in different positions
+    while keyPosition == lockBlockPosition do
+        keyPosition = math.random(width)
+    end
 
     -- insert blank tables into tiles for later access
     for x = 1, height do
@@ -41,7 +54,7 @@ function LevelMaker.generate(width, height)
         end
 
         -- chance to just be emptiness
-        if x ~=1 and math.random(7) == 1 then
+        if x ~=1 and x~= lockBlockPosition and x ~= keyPosition and math.random(7) == 1 then
             for y = 7, height do
                 table.insert(tiles[y],
                     Tile(x, y, tileID, nil, tileset, topperset))
@@ -76,7 +89,11 @@ function LevelMaker.generate(width, height)
             end
 
             -- chance to spawn a block
-            if math.random(10) == 1 then
+            if x == lockBlockPosition then
+                table.insert(objects, lockMaker(x, y, blockHeight, objects))
+            elseif x == keyPosition then
+                table.insert(objects, keyMaker(x, y, blockHeight, objects))
+            elseif math.random(10) == 1 then
                 table.insert(objects, blockMaker(x, y, blockHeight, objects))
             end
         end
@@ -85,9 +102,73 @@ function LevelMaker.generate(width, height)
     local map = TileMap(width, height)
     map.tiles = tiles
     
-    return GameLevel(entities, objects, map)
+    gameLevel = GameLevel(entities, objects, map)
+    return gameLevel
 end
 
+function lockMaker(x, y, blockHeight, objects)
+    -- jump block
+    return GameObject {
+        texture = 'keys-and-locks',
+        x = (x - 1) * TILE_SIZE,
+        y = (blockHeight - 1) * TILE_SIZE,
+        width = 16,
+        height = 16,
+
+        -- make it a random variant
+        frame = 4 + lockVariant,
+        collidable = true,
+        hit = false,
+        solid = true,
+
+        -- collision function takes itself
+        onCollide = function(obj)           
+            gSounds['powerup-reveal']:play()
+            
+            obj.consumable = keyTaken
+            obj.solid = not keyTaken
+            -- print(obj.consumable)
+
+        end,
+
+        onConsume = function(obj)
+            gameLevel.spawnLevelEnd()
+        end
+
+    }
+end
+
+function keyMaker(x, y, blockHeight, objects)
+    -- key
+    return GameObject {
+        texture = 'keys-and-locks',
+        x = (x - 1) * TILE_SIZE,
+        y = (blockHeight - 1) * TILE_SIZE,
+        width = 16,
+        height = 16,
+
+        -- make it a random variant
+        frame = lockVariant,
+        collidable = true,
+        consumable = true,
+        hit = false,
+        solid = false,
+
+        -- collision function takes itself
+        onConsume = function(obj)
+
+            -- TODO: remove this check
+            if not obj.hit then
+                -- TODO: use another sound
+                gSounds['powerup-reveal']:play()
+
+                obj.hit = true
+                keyTaken = true
+            end
+
+        end
+    }
+end
 
 function blockMaker(x, y, blockHeight, objects) 
     -- jump block

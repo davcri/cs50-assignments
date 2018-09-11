@@ -56,3 +56,7 @@ function GameLevel:render()
         entity:render()
     end
 end
+
+function GameLevel:spawnLevelEnd()
+    print("SPWWWWWN")
+end

@@ -91,3 +91,9 @@ JUMP_BLOCKS = {}
 for i = 1, 30 do
     table.insert(JUMP_BLOCKS, i)
 end
+
+LOCK_VARIANTS = {}
+
+for i = 1, 4 do
+    table.insert(LOCK_VARIANTS, i)
+end
