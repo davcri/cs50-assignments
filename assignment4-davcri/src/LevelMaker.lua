@@ -22,6 +22,9 @@ function LevelMaker.generate(width, height)
     local tileset = math.random(20)
     local topperset = math.random(20)
 
+    -- box position
+    local boxPosition = math.random(width)
+
     -- insert blank tables into tiles for later access
     for x = 1, height do
         table.insert(tiles, {})
@@ -74,7 +77,6 @@ function LevelMaker.generate(width, height)
 
             -- chance to spawn a block
             if math.random(10) == 1 then
-
                 table.insert(objects, blockMaker(x, y, blockHeight, objects))
             end
         end
