@@ -16,6 +16,10 @@ Installate Love2D v0.10.2 (Super Toast), il codice non è compatibile con versio
 love .
 ```
 
+## Argomenti 
 
-
+- RNG
+- IA semplice
+- posizione, velocità 
+- semplici collisioni
 
