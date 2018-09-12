@@ -9,6 +9,7 @@
 GameObject = Class{}
 
 function GameObject:init(def)
+    self.name = def.name
     self.x = def.x
     self.y = def.y
     self.texture = def.texture

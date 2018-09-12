@@ -49,6 +49,11 @@ function GameLevel:render()
     self.tileMap:render()
 
     for k, object in pairs(self.objects) do
+        print()
+        print('---------------------')
+        print(object.texture)
+        print(object.x, object.y)
+
         object:render()
     end
 
@@ -58,5 +63,47 @@ function GameLevel:render()
 end
 
 function GameLevel:spawnLevelEnd()
-    print("SPWWWWWN")
+    table.insert(self.objects, self:rodMaker(4, -1, 4, self.objects))
+    table.insert(self.objects, self:flagMaker(4, -1, 4, self.objects))
 end
+
+function GameLevel:flagMaker(x, y, blockHeight, objects)
+    return GameObject {
+        texture = 'flags',
+        x = (x - 1) * TILE_SIZE + 8,
+        y = (blockHeight - 1) * TILE_SIZE,
+        width = 16,
+        height = 16,
+
+        -- make it a random variant
+        frame = 7,
+        collidable = false,
+        solid = true,
+
+        onCollide = function()
+        end
+    }
+end
+
+function GameLevel:rodMaker(x, y, blockHeight, objects)
+    return GameObject {
+        texture = 'flag-rod',
+        x = (x - 1) * TILE_SIZE,
+        y = (blockHeight - 1) * TILE_SIZE,
+        width = 16,
+        height = 16*4,
+
+        -- make it a random variant
+        frame = 1,
+        collidable = true,
+        hit = false,
+        solid = true,
+
+        -- collision function takes itself
+        onCollide = function(obj)           
+            gSounds['powerup-reveal']:play()
+        end
+    }
+end
+
+

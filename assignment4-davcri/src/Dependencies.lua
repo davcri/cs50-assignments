@@ -65,6 +65,8 @@ gSounds = {
     ['kill2'] = love.audio.newSource('sounds/kill2.wav')
 }
 
+local flagImage = love.graphics.newImage('graphics/flags.png')
+
 gTextures = {
     ['tiles'] = love.graphics.newImage('graphics/tiles.png'),
     ['toppers'] = love.graphics.newImage('graphics/tile_tops.png'),
@@ -74,7 +76,9 @@ gTextures = {
     ['backgrounds'] = love.graphics.newImage('graphics/backgrounds.png'),
     ['green-alien'] = love.graphics.newImage('graphics/green_alien.png'),
     ['creatures'] = love.graphics.newImage('graphics/creatures.png'),
-    ['keys-and-locks'] = love.graphics.newImage('graphics/keys_and_locks.png')
+    ['keys-and-locks'] = love.graphics.newImage('graphics/keys_and_locks.png'),
+    ['flag-rod'] = flagImage,
+    ['flags'] = flagImage 
 }
 
 gFrames = {
@@ -88,7 +92,9 @@ gFrames = {
     ['backgrounds'] = GenerateQuads(gTextures['backgrounds'], 256, 128),
     ['green-alien'] = GenerateQuads(gTextures['green-alien'], 16, 20),
     ['creatures'] = GenerateQuads(gTextures['creatures'], 16, 16),
-    ['keys-and-locks'] = GenerateQuads(gTextures['keys-and-locks'], 16, 16)
+    ['keys-and-locks'] = GenerateQuads(gTextures['keys-and-locks'], 16, 16),
+    ['flag-rod'] = GenerateQuads(gTextures['flag-rod'], 16, 16*4),
+    ['flags'] = GenerateQuads(gTextures['flags'], 16, 16),
 }
 
 -- these need to be added after gFrames is initialized because they refer to gFrames from within

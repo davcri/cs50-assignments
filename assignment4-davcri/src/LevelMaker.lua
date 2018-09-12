@@ -107,7 +107,6 @@ function LevelMaker.generate(width, height)
 end
 
 function lockMaker(x, y, blockHeight, objects)
-    -- jump block
     return GameObject {
         texture = 'keys-and-locks',
         x = (x - 1) * TILE_SIZE,
@@ -124,15 +123,15 @@ function lockMaker(x, y, blockHeight, objects)
         -- collision function takes itself
         onCollide = function(obj)           
             gSounds['powerup-reveal']:play()
-            
-            obj.consumable = keyTaken
-            obj.solid = not keyTaken
-            -- print(obj.consumable)
-
+            for k, object in pairs(objects) do
+                if keyTaken and object == obj then
+                    table.remove(objects, k)
+                    gameLevel:spawnLevelEnd()
+                end
+            end
         end,
 
         onConsume = function(obj)
-            gameLevel.spawnLevelEnd()
         end
 
     }
