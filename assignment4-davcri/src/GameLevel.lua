@@ -49,11 +49,6 @@ function GameLevel:render()
     self.tileMap:render()
 
     for k, object in pairs(self.objects) do
-        print()
-        print('---------------------')
-        print(object.texture)
-        print(object.x, object.y)
-
         object:render()
     end
 
@@ -63,8 +58,8 @@ function GameLevel:render()
 end
 
 function GameLevel:spawnLevelEnd()
-    table.insert(self.objects, self:rodMaker(4, -1, 4, self.objects))
-    table.insert(self.objects, self:flagMaker(4, -1, 4, self.objects))
+    table.insert(self.objects, self:rodMaker(LEVEL_WIDTH - 1, -1, 4, self.objects))
+    table.insert(self.objects, self:flagMaker(LEVEL_WIDTH - 1, -1, 4, self.objects))
 end
 
 function GameLevel:flagMaker(x, y, blockHeight, objects)
@@ -78,9 +73,12 @@ function GameLevel:flagMaker(x, y, blockHeight, objects)
         -- make it a random variant
         frame = 7,
         collidable = false,
-        solid = true,
+        solid = false,
 
         onCollide = function()
+        end,
+
+        onConsume = function()
         end
     }
 end
@@ -90,18 +88,26 @@ function GameLevel:rodMaker(x, y, blockHeight, objects)
         texture = 'flag-rod',
         x = (x - 1) * TILE_SIZE,
         y = (blockHeight - 1) * TILE_SIZE,
-        width = 16,
+        width = 14,
         height = 16*4,
 
         -- make it a random variant
         frame = 1,
-        collidable = true,
+        collidable = false,
+        consumable = true,
         hit = false,
-        solid = true,
+        solid = false,
 
         -- collision function takes itself
         onCollide = function(obj)           
             gSounds['powerup-reveal']:play()
+            print("COL")
+            gStateMachine:change('play')
+        end,
+
+        onConsume = function(obj)
+            print("CONSUMAMI")
+            gStateMachine:change('play')
         end
     }
 end

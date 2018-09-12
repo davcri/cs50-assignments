@@ -54,7 +54,7 @@ function LevelMaker.generate(width, height)
         end
 
         -- chance to just be emptiness
-        if x ~=1 and x~= lockBlockPosition and x ~= keyPosition and math.random(7) == 1 then
+        if x ~=1 and x~= lockBlockPosition and x ~= keyPosition and x < width - 3 and math.random(7) == 1 then
             for y = 7, height do
                 table.insert(tiles[y],
                     Tile(x, y, tileID, nil, tileset, topperset))
@@ -67,6 +67,12 @@ function LevelMaker.generate(width, height)
             for y = 7, height do
                 table.insert(tiles[y],
                     Tile(x, y, tileID, y == 7 and topper or nil, tileset, topperset))
+            end
+               
+            -- don't spawn anything else then the groun in the last 3 columns 
+            -- this will be the position where the flag will appear
+            if x >= width - 3 then
+                goto continue
             end
 
             -- chance to generate a pillar
@@ -97,6 +103,8 @@ function LevelMaker.generate(width, height)
                 table.insert(objects, blockMaker(x, y, blockHeight, objects))
             end
         end
+
+        ::continue::
     end
 
     local map = TileMap(width, height)

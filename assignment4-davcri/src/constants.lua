@@ -97,3 +97,5 @@ LOCK_VARIANTS = {}
 for i = 1, 4 do
     table.insert(LOCK_VARIANTS, i)
 end
+
+LEVEL_WIDTH = 25
