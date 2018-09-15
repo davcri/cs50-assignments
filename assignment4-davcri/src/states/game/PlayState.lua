@@ -8,9 +8,39 @@
 PlayState = Class{__includes = BaseState}
 
 function PlayState:init()
+    print("PLAYSTATE init")
     self.camX = 0
     self.camY = 0
-    self.level = LevelMaker.generate(LEVEL_WIDTH, 10)
+end
+
+function PlayState:update(dt)
+    Timer.update(dt)
+
+    -- remove any nils from pickups, etc.
+    self.level:clear()
+
+    -- update player and level
+    self.player:update(dt)
+    self.level:update(dt)
+
+    -- constrain player X no matter which state
+    if self.player.x <= 0 then
+        self.player.x = 0
+    elseif self.player.x > TILE_SIZE * self.tileMap.width - self.player.width then
+        self.player.x = TILE_SIZE * self.tileMap.width - self.player.width
+    end
+
+    self:updateCamera()
+end
+
+function PlayState:enter(enterParams)
+    if enterParams then
+        levelWidth = LEVEL_WIDTH*enterParams.currentLevel
+    else
+        levelWidth = LEVEL_WIDTH
+    end
+
+    self.level = LevelMaker.generate(levelWidth, 10)
     self.tileMap = self.level.tileMap
     self.background = math.random(3)
     self.backgroundX = 0
@@ -32,29 +62,17 @@ function PlayState:init()
         level = self.level
     })
 
+    if enterParams then
+        self.player.score = enterParams.score
+        self.player.currentLevel = enterParams.currentLevel + 1
+    end
+
+    print(self.player.score)
+    print(self.player.currentLevel)
+    
     self:spawnEnemies()
 
     self.player:changeState('falling')
-end
-
-function PlayState:update(dt)
-    Timer.update(dt)
-
-    -- remove any nils from pickups, etc.
-    self.level:clear()
-
-    -- update player and level
-    self.player:update(dt)
-    self.level:update(dt)
-
-    -- constrain player X no matter which state
-    if self.player.x <= 0 then
-        self.player.x = 0
-    elseif self.player.x > TILE_SIZE * self.tileMap.width - self.player.width then
-        self.player.x = TILE_SIZE * self.tileMap.width - self.player.width
-    end
-
-    self:updateCamera()
 end
 
 function PlayState:render()
@@ -80,6 +98,10 @@ function PlayState:render()
     love.graphics.print(tostring(self.player.score), 5, 5)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.print(tostring(self.player.score), 4, 4)
+    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.print("Level - " .. tostring(self.player.currentLevel), 5, VIRTUAL_HEIGHT - 15)
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.print("Level - " .. tostring(self.player.currentLevel), 4, VIRTUAL_HEIGHT - 16)
 end
 
 function PlayState:updateCamera()

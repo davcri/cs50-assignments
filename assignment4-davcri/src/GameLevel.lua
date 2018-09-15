@@ -101,13 +101,11 @@ function GameLevel:rodMaker(x, y, blockHeight, objects)
         -- collision function takes itself
         onCollide = function(obj)           
             gSounds['powerup-reveal']:play()
-            print("COL")
-            gStateMachine:change('play')
+            return true
         end,
 
         onConsume = function(obj)
-            print("CONSUMAMI")
-            gStateMachine:change('play')
+            gStateMachine:change('play', obj)
         end
     }
 end
