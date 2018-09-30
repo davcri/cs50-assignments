@@ -12,6 +12,8 @@ function Room:init(player)
     self.width = MAP_WIDTH
     self.height = MAP_HEIGHT
 
+    -- table containing the ids of the tiles to draw. The ids are object with a single 'id' property
+    -- eg: {id = 1}
     self.tiles = {}
     self:generateWallsAndFloors()
 
@@ -51,7 +53,7 @@ function Room:generateEntities()
     for i = 1, 10 do
         local type = types[math.random(#types)]
 
-        table.insert(self.entities, Entity {
+        enemy = Enemy {
             animations = ENTITY_DEFS[type].animations,
             walkSpeed = ENTITY_DEFS[type].walkSpeed or 20,
 
@@ -65,7 +67,9 @@ function Room:generateEntities()
             height = 16,
 
             health = 1
-        })
+        }
+
+        table.insert(self.entities, enemy)
 
         self.entities[i].stateMachine = StateMachine {
             ['walk'] = function() return EntityWalkState(self.entities[i]) end,
