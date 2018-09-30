@@ -10,6 +10,9 @@ Player = Class{__includes = Entity}
 
 function Player:init(def)
     Entity.init(self, def)
+    Event.on('heartCollected', function()
+        self.health = math.min(6, self.health + 2)
+    end)
 end
 
 function Player:update(dt)

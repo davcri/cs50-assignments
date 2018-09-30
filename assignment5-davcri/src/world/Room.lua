@@ -150,6 +150,10 @@ function Room:generateWallsAndFloors()
     end
 end
 
+function Room:spawnHeart(x, y)
+    table.insert(self.objects, GameObject(GAME_OBJECT_DEFS['heart'], x, y))
+end
+
 function Room:update(dt)
     -- don't update anything if we are sliding to another room (we have offsets)
     if self.adjacentOffsetX ~= 0 or self.adjacentOffsetY ~= 0 then return end
@@ -159,22 +163,31 @@ function Room:update(dt)
     for i = #self.entities, 1, -1 do
         local entity = self.entities[i]
 
-        -- remove entity from the table if health is <= 0
-        if entity.health <= 0 then
-            entity.dead = true
-        elseif not entity.dead then
-            entity:processAI({room = self}, dt)
-            entity:update(dt)
-        end
+        -- if entity is dead, skip the next code block
+        if not entity.dead then
+            -- if entity has been just defeated
+            if entity.health <= 0 then
+                -- mark entity as dead
+                entity.dead = true
+                -- spawn a heart with 10% probability
+                if math.random(10) <= 7 then
+                    self:spawnHeart(entity.x, entity.y)
+                end
+            -- if entity has not been defeated yet
+            else 
+                entity:processAI({room = self}, dt)
+                entity:update(dt)
+            end
 
-        -- collision between the player and entities in the room
-        if not entity.dead and self.player:collides(entity) and not self.player.invulnerable then
-            gSounds['hit-player']:play()
-            self.player:damage(1)
-            self.player:goInvulnerable(1.5)
-
-            if self.player.health == 0 then
-                gStateMachine:change('game-over')
+            -- collision between the player and entities in the room
+            if self.player:collides(entity) and not self.player.invulnerable then
+                gSounds['hit-player']:play()
+                self.player:damage(1)
+                self.player:goInvulnerable(1.5)
+    
+                if self.player.health == 0 then
+                    gStateMachine:change('game-over')
+                end
             end
         end
     end
@@ -184,7 +197,11 @@ function Room:update(dt)
 
         -- trigger collision callback on object
         if self.player:collides(object) then
+            Event.dispatch('heartCollected')
             object:onCollide()
+            if object.consumable then
+                table.remove(self.objects, k)
+            end
         end
     end
 end
