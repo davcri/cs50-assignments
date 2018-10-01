@@ -42,6 +42,19 @@ function Room:init(player)
     -- used for drawing when this room is the next room, adjacent to the active
     self.adjacentOffsetX = 0
     self.adjacentOffsetY = 0
+
+    -- handle player's interaction with objects
+    Event.on('playerActionAtPosition', function(objectHitbox)
+        for k, obj in pairs(self.objects) do 
+            -- if the object is a pot and is inside the player's reach
+            if obj.type == 'pot' and objectHitbox:collides(obj) then
+                -- set the player to the idle-pot state
+                self.player:changeState('idle-pot', {pot = obj})
+                -- remove the pot from the room objects
+                table.remove(self.objects, k)
+            end
+        end
+    end)
 end
 
 --[[
@@ -109,8 +122,11 @@ function Room:generateObjects()
     end
 
     --GameObject: pots
+    -- set a random number of pots to spawn
     local potsCount = math.random(5)
+    -- for every pot
     for i = 1, potsCount do
+        -- insert it into the objects table
         table.insert(self.objects, GameObject(
             GAME_OBJECT_DEFS['pot'],
             math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,

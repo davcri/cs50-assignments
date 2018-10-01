@@ -68,7 +68,6 @@ function EntityWalkState:update(dt)
     end
 
     if self.bumped then
-        print(oldX, oldY)
         self.entity.x, self.entity.y = oldX, oldY
     end
 end
