@@ -121,4 +121,15 @@ function PlayerWithPotState:update(dt)
             self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
         end
     end
+
+    -- update pot position
+    self.pot.x, self.pot.y = self.entity.x, self.entity.y
+end
+
+function PlayerWithPotState:render()
+    EntityWalkState.render(self)
+
+    if self.pot then
+        self.pot:render(0, -12)
+    end
 end

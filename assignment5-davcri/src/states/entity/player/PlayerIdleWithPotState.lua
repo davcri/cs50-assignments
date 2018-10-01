@@ -34,14 +34,14 @@ function PlayerIdleWithPotState:update(dt)
         print('LAUNCH POT')
         -- self.entity:changeState('swing-sword')
     end
+
+    self.pot.x, self.pot.y = self.entity.x, self.entity.y
 end
 
--- function PlayerIdleWithPotState:render()
---     EntityIdleState:render()
-    
---     -- love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
---     --     math.floor(self.entity.x - self.entity.offsetX), math.floor(self.entity.y - self.entity.offsetY))
+function PlayerIdleWithPotState:render()
+    EntityIdleState.render(self)
 
---     -- local anim = self.entity
---     -- local anim = self.entity.currentAnimation
--- end
+    if self.pot then
+        self.pot:render(0, -12)
+    end
+end
