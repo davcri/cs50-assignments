@@ -84,6 +84,7 @@ end
     Randomly creates an assortment of obstacles for the player to navigate around.
 ]]
 function Room:generateObjects()
+    -- GameObject: switch
     table.insert(self.objects, GameObject(
         GAME_OBJECT_DEFS['switch'],
         math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
@@ -91,10 +92,8 @@ function Room:generateObjects()
         math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
                     VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
     ))
-
     -- get a reference to the switch
     local switch = self.objects[1]
-
     -- define a function for the switch that will open all doors in the room
     switch.onCollide = function()
         if switch.state == 'unpressed' then
@@ -107,6 +106,18 @@ function Room:generateObjects()
 
             gSounds['door']:play()
         end
+    end
+
+    --GameObject: pots
+    local potsCount = math.random(5)
+    for i = 1, potsCount do
+        table.insert(self.objects, GameObject(
+            GAME_OBJECT_DEFS['pot'],
+            math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
+                        VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
+            math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
+                        VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
+        ))
     end
 end
 

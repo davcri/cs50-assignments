@@ -27,25 +27,24 @@ function EntityWalkState:update(dt)
     -- assume we didn't hit a wall
     self.bumped = false
 
+    local oldX, oldY = self.entity.x, self.entity.y
+
     if self.entity.direction == 'left' then
         self.entity.x = self.entity.x - self.entity.walkSpeed * dt
         
         if self.entity.x <= MAP_RENDER_OFFSET_X + TILE_SIZE then 
-            self.entity.x = MAP_RENDER_OFFSET_X + TILE_SIZE
             self.bumped = true
         end
     elseif self.entity.direction == 'right' then
         self.entity.x = self.entity.x + self.entity.walkSpeed * dt
 
         if self.entity.x + self.entity.width >= VIRTUAL_WIDTH - TILE_SIZE * 2 then
-            self.entity.x = VIRTUAL_WIDTH - TILE_SIZE * 2 - self.entity.width
             self.bumped = true
         end
     elseif self.entity.direction == 'up' then
         self.entity.y = self.entity.y - self.entity.walkSpeed * dt
 
         if self.entity.y <= MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2 then 
-            self.entity.y = MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2
             self.bumped = true
         end
     elseif self.entity.direction == 'down' then
@@ -55,9 +54,22 @@ function EntityWalkState:update(dt)
             + MAP_RENDER_OFFSET_Y - TILE_SIZE
 
         if self.entity.y + self.entity.height >= bottomEdge then
-            self.entity.y = bottomEdge - self.entity.height
             self.bumped = true
         end
+    end
+
+    if self.dungeon then
+        local objects = self.dungeon.currentRoom.objects
+        for k, object in pairs(objects) do
+            if object.solid and self.entity:collides(object) then
+                self.bumped = true
+            end
+        end
+    end
+
+    if self.bumped then
+        print(oldX, oldY)
+        self.entity.x, self.entity.y = oldX, oldY
     end
 end
 

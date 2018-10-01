@@ -27,7 +27,7 @@ GAME_OBJECT_DEFS = {
     ['heart'] = {
         type = 'heart',
         texture = 'hearts',
-        frame = 4,
+        frame = 5,
         width = 16,
         height = 16,
         consumable = true,
@@ -41,6 +41,19 @@ GAME_OBJECT_DEFS = {
         end
     },
     ['pot'] = {
-        -- TODO
+        type = 'pot',
+        texture = 'tiles',
+        frame = 14,
+        width = 16,
+        height = 16,
+        solid = true,
+        defaultState = 'idle',
+        states = {
+            ['idle'] = {
+                frame = 14
+            },
+        },
+        onCollide = function()
+        end
     }
 }
