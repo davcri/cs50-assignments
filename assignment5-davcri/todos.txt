@@ -1,5 +1,2 @@
--character animation in all directions
--switch that opens a door
--monster that randomly roams and shoots projectiles
--monster that randomly roams
--randomized obstacles
+- UI: add button action mapping (space => sword, )
+- 
