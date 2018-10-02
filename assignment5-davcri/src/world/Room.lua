@@ -224,7 +224,9 @@ function Room:update(dt)
 
         -- trigger collision callback on object
         if self.player:collides(object) then
-            Event.dispatch('heartCollected')
+            if object.type == 'heart' then
+                Event.dispatch('heartCollected')
+            end
             object:onCollide()
             if object.consumable then
                 table.remove(self.objects, k)
