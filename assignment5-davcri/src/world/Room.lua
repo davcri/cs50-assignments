@@ -57,31 +57,48 @@ function Room:init(player)
     end)
 
     Event.on('pot-thrown', function(params)
-        local distance = 4*16 -- 4 tiles length
-        local offset = 64 
-
-        print(params.pot)
-        print(params.direction)
         local pot = params.pot
-        print(pot.x, pot.y)
+        local distance = 4*16 -- 4 tiles length
+        local finalX, finalY = pot.x, pot.y 
+        local offset = 18
 
         if params.direction == 'up' then
-            pot.x, pot.y = pot.x, pot.y + offset
-        elseif params.direction == 'down' then
+            offset = 24
             pot.x, pot.y = pot.x, pot.y - offset
+            finalY = pot.y - distance
+        elseif params.direction == 'down' then
+            offset = 24
+            pot.x, pot.y = pot.x, pot.y + offset
+            finalY = pot.y + distance
         elseif params.direction == 'left' then
             pot.x, pot.y = pot.x - offset, pot.y
+            finalX = pot.x - distance
         elseif params.direction == 'right' then
             pot.x, pot.y = pot.x + offset, pot.y
+            finalX = pot.x + distance
         end
 
-        pot.x = 64
-        pot.y = 64
-        -- pot.adjacentOffsetX = 64
-        -- pot.adjacentOffsetY = 0
+        pot = GameObject(
+            GAME_OBJECT_DEFS['pot'],
+            pot.x,
+            pot.y
+        )
+        -- update the state 
+        pot.state = 'thrown'
+        -- tween the attributes
+        Timer.tween(1, {
+            [pot] = {x = finalX, y = finalY}
+        })
+        :finish(function()
+            pot.state = 'idle'
+        end)
+        -- add the pot to the objects table
+        table.insert(self.objects, pot)
 
-        print(pot.x, pot.y)
-        -- table.insert(self.objects, pot)
+        --   NOTE: non ho capito perché se uso la variabile params.pot (senza istanziare un nuovo oggetto) 
+        --   il pot non cambiat la sua posizione:
+        -- table.insert(self.objects, params.pot)
+        --   probabilmente è perché l'oggetto params.pot è modificato da qualche altra classe
     end)
 end
 
@@ -260,7 +277,38 @@ function Room:update(dt)
                 table.remove(self.objects, k)
             end
         end
+
+        if object.type == 'pot' and object.state == 'thrown' then
+            -- wall collision check
+            if self:wallsCollideWith(object) then
+                table.remove(self.objects, k)
+            end
+ 
+            -- foreach entity (enemy)
+            for i = #self.entities, 1, -1 do
+                local entity = self.entities[i]
+                -- if entity is dead, skip the next code block
+                if not entity.dead then
+                    if entity:collides(object) then
+                        -- pot collided with enemy, so deal damage
+                        entity:damage(1)
+                        -- and destroy the pot, removing it from the objects table
+                        table.remove(self.objects, k)
+                    end
+                end
+            end
+        end
     end
+    Timer.update(dt)
+end
+
+function Room:wallsCollideWith(obj) 
+    if obj.x <= TILE_SIZE or obj.x >= TILE_SIZE*self.width
+       or obj.y <= TILE_SIZE or obj.y >= TILE_SIZE*self.height then
+        return true
+    end
+
+    return false
 end
 
 function Room:render()

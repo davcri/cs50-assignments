@@ -52,6 +52,9 @@ GAME_OBJECT_DEFS = {
             ['idle'] = {
                 frame = 14
             },
+            ['thrown'] = {
+                frame = 14
+            }
         },
         onCollide = function()
         end
