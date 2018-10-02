@@ -1,2 +1,2 @@
-- UI: add button action mapping (space => sword, )
+- Update UI: add button action mapping (space => sword, E => pick item)
 - 
