@@ -14,7 +14,7 @@ function PlayerWithPotState:enter(params)
     -- self.entity.offsetX = 0
 
     if params then
-        self.pot = params.pot
+        self.pot = params.pot -- pot is a GameObject
         print(self.pot.x, self.pot.y)
     end
 end
@@ -46,8 +46,8 @@ function PlayerWithPotState:update(dt)
     end
 
     if love.keyboard.wasPressed('space') then
-        print('LAUNCH POT')
-        -- self.entity:changeState('swing-sword')
+        Event.dispatch('pot-thrown', {pot = self.pot, direction = self.entity.direction})
+        self.entity:changeState('idle')
     end
 
     -- perform base collision detection against walls
@@ -129,7 +129,5 @@ end
 function PlayerWithPotState:render()
     EntityWalkState.render(self)
 
-    if self.pot then
-        self.pot:render(0, -12)
-    end
+    self.pot:render(0, -12)
 end

@@ -55,6 +55,34 @@ function Room:init(player)
             end
         end
     end)
+
+    Event.on('pot-thrown', function(params)
+        local distance = 4*16 -- 4 tiles length
+        local offset = 64 
+
+        print(params.pot)
+        print(params.direction)
+        local pot = params.pot
+        print(pot.x, pot.y)
+
+        if params.direction == 'up' then
+            pot.x, pot.y = pot.x, pot.y + offset
+        elseif params.direction == 'down' then
+            pot.x, pot.y = pot.x, pot.y - offset
+        elseif params.direction == 'left' then
+            pot.x, pot.y = pot.x - offset, pot.y
+        elseif params.direction == 'right' then
+            pot.x, pot.y = pot.x + offset, pot.y
+        end
+
+        pot.x = 64
+        pot.y = 64
+        -- pot.adjacentOffsetX = 64
+        -- pot.adjacentOffsetY = 0
+
+        print(pot.x, pot.y)
+        -- table.insert(self.objects, pot)
+    end)
 end
 
 --[[

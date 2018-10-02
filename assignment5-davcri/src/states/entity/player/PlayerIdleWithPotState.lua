@@ -14,7 +14,7 @@ function PlayerIdleWithPotState:enter(params)
     self.entity.offsetX = 0
 
     if params then
-        self.pot = params.pot
+        self.pot = params.pot -- pot is a GameObject
     end
 
     self.entity:changeAnimation('idle-pot-' .. self.entity.direction)
@@ -31,8 +31,8 @@ function PlayerIdleWithPotState:update(dt)
     end
 
     if love.keyboard.wasPressed('space') then
-        print('LAUNCH POT')
-        -- self.entity:changeState('swing-sword')
+        Event.dispatch('pot-thrown', {pot = self.pot, direction = self.entity.direction})
+        self.entity:changeState('idle')
     end
 
     self.pot.x, self.pot.y = self.entity.x, self.entity.y
@@ -41,7 +41,7 @@ end
 function PlayerIdleWithPotState:render()
     EntityIdleState.render(self)
 
-    if self.pot then
-        self.pot:render(0, -12)
-    end
+    -- if self.pot then
+    self.pot:render(0, -12)
+    -- end
 end
