@@ -43,6 +43,8 @@ function Level:init()
                     table.insert(self.destroyedBodies, b:getBody())
                 end
             end
+
+            self.launchMarker.alien.collided = true
         end
 
         -- if we collided between an obstacle and an alien, as by debris falling...
@@ -114,8 +116,13 @@ function Level:init()
     -- shows alien before being launched and its trajectory arrow
     self.launchMarker = AlienLaunchMarker(self.world)
 
-    -- aliens in our scene
+    -- aliens (enemy) in our scene
     self.aliens = {}
+
+    self.alienSplitted = false
+
+    -- additional spawned playerAliens
+    self.playerAliens = {}
 
     -- obstacles guarding aliens that we can destroy
     self.obstacles = {}
@@ -184,6 +191,36 @@ function Level:update(dt)
 
     -- replace launch marker if original alien stopped moving
     if self.launchMarker.launched then
+
+        if not self.launchMarker.alien.collided then
+            if love.keyboard.wasPressed('space') and not self.alienSplitted then
+                self.alienSplitted = true
+
+                -- split the alien into 3 aliens
+                local aBody = self.launchMarker.alien.body
+
+                for i = 1,2 do
+                    -- spawn new alien in the world, passing in user data of player
+                    local anotherAlien
+                    local vX, vY = aBody:getLinearVelocity()
+
+                    if i % 2 == 0 then
+                        anotherAlien = Alien(self.world, 'round', aBody:getX(), 30 + aBody:getY(), 'Player')
+                        -- apply the difference between current X,Y and base X,Y as launch vector impulse
+                        anotherAlien.body:setLinearVelocity(vX, vY + 30)
+                    else
+                        anotherAlien = Alien(self.world, 'round', aBody:getX(), -30 + aBody:getY(), 'Player')
+                        anotherAlien.body:setLinearVelocity(vX, vY - 30)
+                    end
+                    -- make the alien pretty bouncy
+                    anotherAlien.fixture:setRestitution(0.4)
+                    anotherAlien.body:setAngularDamping(1)
+  
+                    table.insert(self.playerAliens, anotherAlien)
+                end
+            end
+        end
+
         local xPos, yPos = self.launchMarker.alien.body:getPosition()
         local xVel, yVel = self.launchMarker.alien.body:getLinearVelocity()
         
@@ -209,6 +246,10 @@ function Level:render()
     self.launchMarker:render()
 
     for k, alien in pairs(self.aliens) do
+        alien:render()
+    end
+
+    for k, alien in pairs(self.playerAliens) do
         alien:render()
     end
 
