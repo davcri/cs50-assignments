@@ -9,6 +9,7 @@
 BattleMessageState = Class{__includes = BaseState}
 
 function BattleMessageState:init(msg, onClose, canInput)
+    self.name = "BattleMessageState"
     self.textbox = Textbox(0, VIRTUAL_HEIGHT - 64, VIRTUAL_WIDTH, 64, msg, gFonts['medium'])
 
     -- function to be called once this message is popped

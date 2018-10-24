@@ -33,9 +33,19 @@ end
 function StateStack:push(state)
     table.insert(self.states, state)
     state:enter()
+    self:debugPrint()
 end
 
 function StateStack:pop()
     self.states[#self.states]:exit()
     table.remove(self.states)
+    self:debugPrint()
+end
+
+function StateStack:debugPrint()
+    print()
+    print("STATES STACK")
+    for i = #self.states, 1, -1 do 
+        print(i, self.states[i], self.states[i].name)
+    end
 end

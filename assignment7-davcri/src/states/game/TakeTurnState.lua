@@ -9,6 +9,7 @@
 TakeTurnState = Class{__includes = BaseState}
 
 function TakeTurnState:init(battleState)
+    self.name = "TakeTurnState"
     self.battleState = battleState
     self.playerPokemon = self.battleState.player.party.pokemon[1]
     self.opponentPokemon = self.battleState.opponent.party.pokemon[1]

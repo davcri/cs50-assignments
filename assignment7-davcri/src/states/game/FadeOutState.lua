@@ -9,6 +9,7 @@
 FadeOutState = Class{__includes = BaseState}
 
 function FadeOutState:init(color, time, onFadeComplete)
+    self.name = "FadeOutState"
     self.opacity = 255
     self.r = color.r
     self.g = color.g

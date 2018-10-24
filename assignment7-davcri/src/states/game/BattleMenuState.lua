@@ -9,8 +9,9 @@
 BattleMenuState = Class{__includes = BaseState}
 
 function BattleMenuState:init(battleState)
+    self.name = "BattleMenuState"
     self.battleState = battleState
-    
+
     self.battleMenu = Menu {
         x = VIRTUAL_WIDTH - 64,
         y = VIRTUAL_HEIGHT - 64,
@@ -27,6 +28,7 @@ function BattleMenuState:init(battleState)
             {
                 text = 'Run',
                 onSelect = function()
+                    print("BattleMenuState:battleMenu.items.run.onSelect called")
                     gSounds['run']:play()
                     
                     -- pop battle menu
@@ -35,7 +37,7 @@ function BattleMenuState:init(battleState)
                     -- show a message saying they successfully ran, then fade in
                     -- and out back to the field automatically
                     gStateStack:push(BattleMessageState('You fled successfully!',
-                        function() end), false)
+                        function() end, false))
                     Timer.after(0.5, function()
                         gStateStack:push(FadeInState({
                             r = 255, g = 255, b = 255

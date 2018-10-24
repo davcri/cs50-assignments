@@ -9,6 +9,7 @@
 BattleState = Class{__includes = BaseState}
 
 function BattleState:init(player)
+    self.name = "BattleState"
     self.player = player
     self.bottomPanel = Panel(0, VIRTUAL_HEIGHT - 64, VIRTUAL_WIDTH, 64)
 
